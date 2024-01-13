@@ -118,7 +118,7 @@ def after_login():
     else:
         if(session):
             # print(session["id"])
-            list_items = todo.query.filter_by(user_id = session["id"]).order_by(todo.completed_task4).all()
+            list_items = todo.query.filter_by(user_id = session["id"]).order_by(todo.completed_task).all()
             # list_items = [for item in list_items]
             print(list_items)
             for items in list_items:

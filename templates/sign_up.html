@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    <form class="signup-form" action="/signUp" method="post">
+        <label ><b>Sign up </b></label>
+        <input type="text" name="user-name" class="signup-username" placeholder="Enter the user name" >
+        <input type="email" class="signup-email" placeholder="Enter your mail id" name="signup-email" required >
+        <input type="password"  class="signup-password" placeholder="Enter your password" name="signup-password">
+        <!-- <input type="button" class ="login-submit" value="submit"> -->
+        <button class="signup-submit" >submit</button> 
+        <h5 class="sigup-h5">
+            Already have an account
+        </h5>
+       <a href="/" class="signup-form-login"><b>Login</b></a>
+    </form>
+{% endblock %}

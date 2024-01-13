@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form id="todo-form" action="/logged" method="post" class="todo-form">
+    <input type="text" id="todo-input" placeholder="Enter a new task" name="todo-list" class="todo-list" required>
+    <button type="submit" class='todo-input-button'>Add Task</button>
+</form>
+
+<ul id="todo-list">
+    {% for ele in listOfItems %}
+<li><form method="post" action="/completed_task" class="form-todo-completed">
+<input type="checkbox" class="todo-complete-checkbox" name="todo-checkbox" {% if ele.completed_task %} checked {% endif %} onclick="this.form.submit()">
+
+<input type="hidden" value="{{ele.lin}}" name="checkbox-id">
+<!-- <a class="todo-completed">Completed</a> -->
+</form>
+<form method="post" action="/edit_task" method="post" class="todo-edit-content">
+    <input type="hidden" value="{{ele.lin}}" name="edit_id" class="todo-edit-hidden">
+    <input type="text" value="{{ele.content}}" name="edit_content" class="todo-edit">
+    <button type="submit" value="submit"  class="todo-edit-submit">Edit</button>
+</form>
+<form method="post" action ="/delete_task" method="post" class="todo-delete">
+    <input type="hidden" value="{{ele.lin}}" name="delete_id" class="todo-delete-id">
+    <button type="submit" value="submit" class="todo-delete-button" >Delete</button>
+
+</form>
+</li>
+{% endfor %}
+    <form method="get" action="/logout" class="logout-btn-after-login"><button value="logout" >logout</button></form>
+</ul>
+
+{% endblock %}

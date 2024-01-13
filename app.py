@@ -1,9 +1,10 @@
 from flask import Flask,render_template,url_for,request,redirect,session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
+import os
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.sqlite3"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["DATABASE_URL"]
 app.config["TRACK_MODIFICATION"] = False
 app.secret_key ="uiucuh8574t87582&Y$*&Y$&#"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -172,7 +173,10 @@ def completeTask():
     db.session.commit()
     return redirect(url_for("after_login"))
 
-if __name__ == "__main__" :
+def start_the_run():
     with app.app_context():
         db.create_all()
-    app.run(debug= True)
+    return app
+
+
+app = start_the_run()

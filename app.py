@@ -5,6 +5,7 @@ import os
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["DATABASE_URL"]
+# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
 app.config["TRACK_MODIFICATION"] = False
 app.secret_key ="uiucuh8574t87582&Y$*&Y$&#"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -61,9 +62,15 @@ def signUp():
         return redirect(url_for("after_login"))
 
     if(request.method=="POST"):
-        user_name = request.form.get("user-name")
-        signup_email = request.form.get("signup-email")
-        signup_password = request.form.get("signup-password")
+        print(request.headers["Content-Type"],"content type")
+        form_data = request.get_json()
+        print(form_data) 
+        user_name = form_data.get("user-name")
+        signup_email = form_data.get("signup-email")
+        signup_password = form_data.get("signup-password")
+        print(user_name)
+        print(signup_email)
+        print(signup_password)
         exist = check_already_exist(signup_email)
         if(exist):
             session["user_name"] = user_name
@@ -87,8 +94,9 @@ def signUp():
 
 @app.route('/login',methods =["GET","POST"])
 def logged_in():
-    email = request.form.get("login-email")
-    password = request.form.get("login-password")
+    loging_data = request.get_json()
+    email = loging_data.get("login-email")
+    password = loging_data.get("login-password")
     print(email)
     print(password)
     exist = check_already_exist(email)
@@ -108,7 +116,8 @@ def logged_in():
 def after_login():
     session.permanent =True
     if(request.method=="POST"):
-        todo_content = request.form.get("todo-list")
+        after_login_data  = request.get_json()
+        todo_content = after_login_data.get("todo-list")
         print("to do content" ,todo_content)
         add_details = todo(user_id = session["id"],content=todo_content)
         db.session.add(add_details)
@@ -130,7 +139,8 @@ def after_login():
 @app.route("/delete_task",methods=["GET","POST"])
 def deleteTask():
     if(session):
-        task_id = request.form.get("delete_id")  # This gets the value of 'ele.id' from the form
+        delete_task_data = request.get_json()
+        task_id = delete_task_data.get("delete_id")  # This gets the value of 'ele.id' from the form
         print(task_id,"delete id")
         todo.query.filter_by(lin=task_id).delete()
         db.session.commit()
@@ -141,8 +151,9 @@ def deleteTask():
 @app.route("/edit_task",methods=["GET","POST"])
 def editTask():
     if(session):
-        edit_id = request.form.get("edit_id")
-        content = request.form.get("edit_content")
+        edit_task_data =request.get_json()
+        edit_id = edit_task_data.get("edit_id")
+        content = edit_task_data.get("edit_content")
         finding_element = todo.query.filter_by(lin = edit_id).first()
         print(finding_element.content,"jref8erjifej8e")
         finding_element.content = content
@@ -162,9 +173,10 @@ def logout():
 
 @app.route("/completed_task",methods=["GET","POST"])
 def completeTask():
-    completed = request.form.get("todo-checkbox")
+    completeTask_data = request.get_json()
+    completed = completeTask_data.get("todo-checkbox")
     print(completed,"complted task ",type(completed))
-    id = request.form.get("checkbox-id")
+    id = completeTask_data.get("checkbox-id")
     finding_id=todo.query.filter_by(lin=id).first()
     if(completed=="on"):
         finding_id.completed_task = True
@@ -180,3 +192,9 @@ def start_the_run():
 
 
 app = start_the_run()
+
+
+# if(__name__=="__main__"):
+#     app.run(debug=True)
+#     with app.app_context():
+#         db.create_all()
